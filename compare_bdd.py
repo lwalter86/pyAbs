@@ -1,6 +1,10 @@
 #!/usr/bin/python
 #-*- coding: utf-8 -*-
 
+"""
+compare_bdd.py
+"""
+
 import sqlite3
 import nxppy
 
@@ -15,11 +19,11 @@ def lire():
     print "UID:", uid
 
     cursor.execute('SELECT uid FROM Etudiants')
-    liste_uid_dan_bdd = cursor.fetchall()
+    liste_uid_dans_bdd = cursor.fetchall()
 
     valeur = 0
 
-    for i in liste_uid_dan_bdd:
+    for i in liste_uid_dans_bdd:
         if uid != i[0]:
             #UID inconnu dans la bdd
             valeur = 1
@@ -40,15 +44,15 @@ def lire():
         print "\nErreur: Aucun UID correspondant"
 
 #Connexion a la bdd
-connect = sqlite3.connect('carte.db')
-cursor = connect.cursor()
+con_base = sqlite3.connect('carte.db')
+cursor = con_base.cursor()
 
 #Execution de la fonction
 rep = raw_input("*****\nRetrouver la carte dans la base ?(O:oui/N:non)")
-liste_uid_dan_bdd = ['o', 'O', '0']
-while rep in liste_uid_dan_bdd:
+choix = ['o', 'O', '0']
+while rep in choix:
     lire()
     rep = raw_input("*****\nRetrouver la carte dans la base ?(O:oui/N:non)")
 
-connect.commit()
+con_base.commit()
 cursor.close()

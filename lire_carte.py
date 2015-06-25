@@ -1,30 +1,35 @@
 #!/usr/bin/python
 #-*- coding: utf-8 -*-
 
-# Lecture d'une carte NFC
+"""
+lire_carte.py
+Lecture d'une carte NFC
+"""
 
 import nxppy	
 import time	
 
 def lecture_carte():		
-
+    """
+    Lecture de carte etudiante
+    """
     carte_etu = {
         'uid' : '',
-        'jour' : time.strftime('%Y-%m-%d',time.localtime()),
-        'heure' : time.strftime('%H:%M:%S',time.localtime()),
+        'jour' : time.strftime('%Y-%m-%d', time.localtime()),
+        'heure' : time.strftime('%H:%M:%S', time.localtime()),
         'nom' : '',
         'prenom' : '',
         'groupe' : ''
         }
 
     print "\nPasser la carte"
-    carte=nxppy.Mifare()
+    carte = nxppy.Mifare()
 
     try:
         carte_etu['uid'] = carte.select()		#Lecture UID de la carte
         print "\nCarte détectée"
-        print "UID:",carte_etu['uid']
-        print carte_etu['heure'],"\n",carte_etu['jour']
+        print "UID:", carte_etu['uid']
+        print carte_etu['heure'], "\n", carte_etu['jour']
 
         #Données à écrire
         carte_etu['nom'] = raw_input("Entrer le nom : ")
