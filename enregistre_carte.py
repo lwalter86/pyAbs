@@ -5,14 +5,14 @@ import sqlite3
 import lire_carte
 
 def enregistre():
-	dict = lire_carte.lecture_carte()
+	carte_etu = lire_carte.lecture_carte()
 
-	uid = dict['uid']
-	jour = dict['jour']
-	heure = dict['heure']
-	nom = dict['nom']
-	prenom = dict['prenom']
-	groupe = dict['groupe']
+	uid = carte_etu['uid']
+	jour = carte_etu['jour']
+	heure = carte_etu['heure']
+	nom = carte_etu['nom']
+	prenom = carte_etu['prenom']
+	groupe = carte_etu['groupe']
 
 	cursor.execute('SELECT uid FROM Etudiants')
 	tuple = cursor.fetchall()

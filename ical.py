@@ -103,7 +103,7 @@ df_cal2.pop('DTSTART')
 df_cal2.pop('DTEND')
 print df_cal2[0:10]
 
-rep = '0'	#Lit obligatoirement une carte
+rep = '0'	#Lis obligatoirement une carte
 liste_etu = []
 liste_rep = ['o','O','0']
 d = -1

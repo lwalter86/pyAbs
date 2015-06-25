@@ -11,7 +11,7 @@ def lecture():
 	connection = sqlite3.connect('carte.db')
 	cursor = connection.cursor()
 
-	dict = {
+	etudiant = {
 		'h' : '',
 		'grp' : '',
 		'etu' : ''
@@ -26,7 +26,7 @@ def lecture():
 			print "\n\tCarte détectée"
 			print "\tUID:",uid
 
-			dict['h'] = time.strftime('%H:%M:%S',time.localtime())	#Heure de passage de la carte
+			etudiant['h'] = time.strftime('%H:%M:%S',time.localtime())	#Heure de passage de la carte
 
 			cursor.execute('SELECT uid FROM Etudiants')
 			liste = cursor.fetchall()
@@ -42,7 +42,7 @@ def lecture():
 					cursor.execute('SELECT groupe FROM Etudiants WHERE uid=?',(uid,))
 					tuple = cursor.fetchone()
 					for x in tuple:
-						dict['grp'] = x
+						etudiant['grp'] = x
 
 					#Affiche le nom et le prénom
 					cursor.execute('SELECT nom FROM Etudiants WHERE uid=?',(uid,))
@@ -53,12 +53,12 @@ def lecture():
 					cursor.execute('SELECT prenom FROM Etudiants WHERE uid=?',(uid,))
 					tuple = cursor.fetchone()
 					for x in tuple:
-						dict['etu'] = nom + ' ' + x
+						etudiant['etu'] = nom + ' ' + x
 					break
 
 			if valeur == 1:
 				print "\n\tErreur: Aucun UID correspondant"
-			return dict
+			return etudiant
 		except nxppy.SelectError:
 			pass
 

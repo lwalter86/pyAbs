@@ -8,7 +8,7 @@ import time
 
 def lecture_carte():		
 
-	dict = {
+	carte_etu = {
 	    'uid' : '',
 		'jour' : time.strftime('%Y-%m-%d',time.localtime()),
 		'heure' : time.strftime('%H:%M:%S',time.localtime()),
@@ -21,16 +21,17 @@ def lecture_carte():
 	carte=nxppy.Mifare()
 
         try:
-			dict['uid'] = carte.select()		#Lecture UID de la carte
+			carte_etu['uid'] = carte.select()		#Lecture UID de la carte
 			print "\nCarte détectée"
-			print "UID:",dict['uid']
-			print dict['heure'],"\n",dict['jour']
+			print "UID:",carte_etu['uid']
+			print carte_etu['heure'],"\n",carte_etu['jour']
 
 			#Données à écrire
-			dict['nom'] = raw_input("Entrer le nom : ")
-			dict['prenom'] = raw_input("Entrer le prenom : ")
-			dict['groupe'] = raw_input("Entrer le semestre et le groupe : (ex: GE-S1-A1)")
+			carte_etu['nom'] = raw_input("Entrer le nom : ")
+			carte_etu['prenom'] = raw_input("Entrer le prenom : ")
+			carte_etu['groupe'] = raw_input("Entrer le semestre et le groupe : (ex: GE-S1-A1)")
 
-			return dict
+			return carte_etu
+            
         except nxppy.SelectError:	#Si pas de carte, retour "try"	
 			pass																		
