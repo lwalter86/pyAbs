@@ -35,9 +35,9 @@ requests_cache.install_cache(filename, backend='sqlite', expire_after=300) # exp
 
 jour = time.strftime('%Y-%m-%d',time.localtime())
 params = {
-	'firstDate':jour,
-	'lastDate':jour,
-	'projectId':5
+    'firstDate':jour,
+    'lastDate':jour,
+    'projectId':5
 }
 
 url = "https://upplanning6.appli.univ-poitiers.fr/jsp/custom/modules/plannings/direct_cal.jsp?login={login}&password={password}&code=C14R018&calType=ical".format(login=config['login'], password=config['password'])
@@ -81,29 +81,29 @@ for i, elt in enumerate(desc):
 
 #Heure Debut cours et jour
 for i, x in enumerate(df_cal['DTSTART']):
-	hd =x.strftime('%Y-%m-%d %H:%M:%S')
-	utc = datetime.datetime.now()-datetime.datetime.utcnow()
-	date_select = datetime.datetime.strptime(hd,'%Y-%m-%d %H:%M:%S' )
-	delta = timedelta(seconds =utc.seconds+1)
-	date_debut = date_select + delta
-	df_cal2.DEBUT[i] = date_debut.strftime('%H:%M:%S')
-	df_cal2.JOUR[i] = date_debut.strftime('%Y-%m-%d')
-	
+    hd =x.strftime('%Y-%m-%d %H:%M:%S')
+    utc = datetime.datetime.now()-datetime.datetime.utcnow()
+    date_select = datetime.datetime.strptime(hd,'%Y-%m-%d %H:%M:%S' )
+    delta = timedelta(seconds =utc.seconds+1)
+    date_debut = date_select + delta
+    df_cal2.DEBUT[i] = date_debut.strftime('%H:%M:%S')
+    df_cal2.JOUR[i] = date_debut.strftime('%Y-%m-%d')
+    
 #Heure Fin cours
 for i, x in enumerate(df_cal['DTEND']):
-	hf =x.strftime('%Y-%m-%d %H:%M:%S')
-	utc = datetime.datetime.now()-datetime.datetime.utcnow()
-	date_select = datetime.datetime.strptime(hf,'%Y-%m-%d %H:%M:%S' )
-	delta = timedelta(seconds =utc.seconds+1)
-	date_fin = date_select + delta
-	df_cal2.FIN[i] = date_fin.strftime('%H:%M:%S')
+    hf =x.strftime('%Y-%m-%d %H:%M:%S')
+    utc = datetime.datetime.now()-datetime.datetime.utcnow()
+    date_select = datetime.datetime.strptime(hf,'%Y-%m-%d %H:%M:%S' )
+    delta = timedelta(seconds =utc.seconds+1)
+    date_fin = date_select + delta
+    df_cal2.FIN[i] = date_fin.strftime('%H:%M:%S')
 
 df_cal2.pop('DESCRIPTION')
 df_cal2.pop('DTSTART')
 df_cal2.pop('DTEND')
 print df_cal2[0:10]
 
-rep = '0'	#Lis obligatoirement une carte
+rep = '0'    #Lis obligatoirement une carte
 liste_etu = []
 liste_rep = ['o','O','0']
 d = -1
@@ -111,48 +111,48 @@ f = 1
 
 while rep in liste_rep:
 
-	dict = ical_lire_carte.lecture()
-	heure = dict['h']
-	grp = dict['grp']
-	etu = dict['etu']
+    dict = ical_lire_carte.lecture()
+    heure = dict['h']
+    grp = dict['grp']
+    etu = dict['etu']
 
-	#Compare heure passage
-	for a in enumerate(df_cal2['DEBUT']):
-		for b in enumerate(df_cal2['FIN']):
-			if a[1] <= heure <= b[1] and a[0]==b[0]:
-				d = a[0]
-	f = f+d
+    #Compare heure passage
+    for a in enumerate(df_cal2['DEBUT']):
+        for b in enumerate(df_cal2['FIN']):
+            if a[1] <= heure <= b[1] and a[0]==b[0]:
+                d = a[0]
+    f = f+d
 
-	#Compare Groupe et demi-groupe
-	ajout = 0
-	vide = []
-	if grp[:7] == df_cal2.GROUPE[d][:7] and (df_cal2.GROUPE[d][7:] == vide or grp[7:] == df_cal2.GROUPE[d][7:]):
-		if liste_etu == []:
-			ajout = 1
-		for x in liste_etu:
-			if x == etu:
-				ajout = 0
-				break
-			else:
-				ajout = 1
+    #Compare Groupe et demi-groupe
+    ajout = 0
+    vide = []
+    if grp[:7] == df_cal2.GROUPE[d][:7] and (df_cal2.GROUPE[d][7:] == vide or grp[7:] == df_cal2.GROUPE[d][7:]):
+        if liste_etu == []:
+            ajout = 1
+        for x in liste_etu:
+            if x == etu:
+                ajout = 0
+                break
+            else:
+                ajout = 1
 
-	if ajout == 1:
-		liste_etu.append(etu)
+    if ajout == 1:
+        liste_etu.append(etu)
 
-	#Ajout etudiants présents et effectif
-	df_cal2.ETUDIANTS[d] = '\n'.join(liste_etu)
-	df_cal2.EFFECTIF[d] = len(liste_etu)
-	print '\n',df_cal2[d:f]
+    #Ajout etudiants présents et effectif
+    df_cal2.ETUDIANTS[d] = '\n'.join(liste_etu)
+    df_cal2.EFFECTIF[d] = len(liste_etu)
+    print '\n',df_cal2[d:f]
 
-	heure_rap = time.strftime('%H:%M:%S',time.localtime())
-	if heure_rap >= df_cal2.FIN[d]:
-		break
+    heure_rap = time.strftime('%H:%M:%S',time.localtime())
+    if heure_rap >= df_cal2.FIN[d]:
+        break
 
-	rep = raw_input("\nLire une autre carte ?(O:oui/N:non)")
+    rep = raw_input("\nLire une autre carte ?(O:oui/N:non)")
 
-while heure_rap < df_cal2.FIN[d]:	#Boucle si arret lecture
-	time.sleep(1)
-	heure_rap = time.strftime('%H:%M:%S',time.localtime())
+while heure_rap < df_cal2.FIN[d]:    #Boucle si arret lecture
+    time.sleep(1)
+    heure_rap = time.strftime('%H:%M:%S',time.localtime())
 
 df_cal2[d:f].to_excel('rapport.xls',sheet_name='Sheet1')
 print "\nRapport généré en excel"

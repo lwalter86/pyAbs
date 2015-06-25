@@ -5,45 +5,50 @@ import sqlite3
 import nxppy
 
 def lire():
-	print "\nPasser la carte"
-	carte=nxppy.Mifare()
-	uid = carte.select()
-	print "\nCarte détectée"
-	print "UID:",uid
+    """
+    Lecture de la carte étudiant et vérification de la présence dans la base
+    """
+    print "\nPasser la carte"
+    carte = nxppy.Mifare()
+    uid = carte.select()
+    print "\nCarte détectée"
+    print "UID:", uid
 
-	cursor.execute('SELECT uid FROM Etudiants')
-	liste = cursor.fetchall()
+    cursor.execute('SELECT uid FROM Etudiants')
+    liste_uid_dan_bdd = cursor.fetchall()
 
-	valeur = 0
+    valeur = 0
 
-	for i in liste:
-		if uid != i[0]:
-			valeur = 1			#UID inconnu dans la bdd
-		else:
-			valeur = 0			#UID connu dans la bdd
-			print "UID Correspondant trouvé"
-			break
+    for i in liste_uid_dan_bdd:
+        if uid != i[0]:
+            #UID inconnu dans la bdd
+            valeur = 1
+        else:
+            #UID connu dans la bdd
+            valeur = 0
+            print "UID Correspondant trouvé"
+            break
 
-	if valeur == 0:
-		#Affiche les données
-		cursor.execute('SELECT nom,prenom,groupe FROM Etudiants WHERE uid=?',(uid,))
-		tuple = cursor.fetchone()
-		print "\n*****"
-		for x in tuple:
-			print x
-	else:
-		print "\nErreur: Aucun UID correspondant"
+    if valeur == 0:
+        #Affiche les données
+        cursor.execute('SELECT nom,prenom,groupe FROM Etudiants WHERE uid=?',(uid,))
+        donnees_etu = cursor.fetchone()
+        print "\n*****"
+        for elt in donnees_etu:
+            print elt
+    else:
+        print "\nErreur: Aucun UID correspondant"
 
 #Connexion a la bdd
-connection = sqlite3.connect('carte.db')
-cursor = connection.cursor()
+connect = sqlite3.connect('carte.db')
+cursor = connect.cursor()
 
 #Execution de la fonction
 rep = raw_input("*****\nRetrouver la carte dans la base ?(O:oui/N:non)")
-liste = ['o','O','0']
-while rep in liste:
-	lire()
-	rep = raw_input("*****\nRetrouver la carte dans la base ?(O:oui/N:non)")
+liste_uid_dan_bdd = ['o', 'O', '0']
+while rep in liste_uid_dan_bdd:
+    lire()
+    rep = raw_input("*****\nRetrouver la carte dans la base ?(O:oui/N:non)")
 
-connection.commit()
-cursor.close()	
+connect.commit()
+cursor.close()
