@@ -43,23 +43,16 @@ def lire():
     else:
         print "\nErreur: Aucun UID correspondant"
 
-def main():
-    """
-    Fonction principale
-    """
-    #Connexion a la bdd
-    con_base = sqlite3.connect('carte.db')
-    cursor = con_base.cursor()
+#Connexion a la bdd
+con_base = sqlite3.connect('carte.db')
+cursor = con_base.cursor()
 
-    #Execution de la fonction
+#Execution de la fonction
+rep = raw_input("*****\nRetrouver la carte dans la base ?(O:oui/N:non)")
+choix = ['o', 'O', '0']
+while rep in choix:
+    lire()
     rep = raw_input("*****\nRetrouver la carte dans la base ?(O:oui/N:non)")
-    choix = ['o', 'O', '0']
-    while rep in choix:
-        lire()
-        rep = raw_input("*****\nRetrouver la carte dans la base ?(O:oui/N:non)")
 
-    con_base.commit()
-    cursor.close()
-
-if __name__ == '__main__':
-    main()
+con_base.commit()
+cursor.close()

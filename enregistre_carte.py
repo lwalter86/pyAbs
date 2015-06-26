@@ -41,40 +41,36 @@ def enregistre():
         VALUES(?, ?, ?, ?, ?, ?)''', (uid, jour, heure, nom, prenom, groupe))    
         print "Les valeurs ont été ajoutées"
 
-def main():
-    #Connexion a la bdd
-    connection = sqlite3.connect('carte.db')
-    print "\nOuverture de la base de données"
+#Connexion a la bdd
+connection = sqlite3.connect('carte.db')
+print "\nOuverture de la base de données"
 
-    cursor = connection.cursor()
+cursor = connection.cursor()
 
-    #Creation de la table
-    cursor.execute("CREATE TABLE IF NOT EXISTS Etudiants(id INTEGER PRIMARY KEY, uid VARCHAR, jour DATE, heure TIME, nom VARCHAR, prenom VARCHAR, groupe VARCHAR)")
-    print "Table créée"
+#Creation de la table
+cursor.execute("CREATE TABLE IF NOT EXISTS Etudiants(id INTEGER PRIMARY KEY, uid VARCHAR, jour DATE, heure TIME, nom VARCHAR, prenom VARCHAR, groupe VARCHAR)")
+print "Table créée"
 
-    #Boucle pour lire ou non carte
-    rep = raw_input("Enregistrer une carte ?(O:oui/N:non)")
-    liste = ['o', 'O', '0']
-    while rep in liste:
-        enregistre()
-        rep = raw_input("\nEnregistrer une carte ? (O:oui/N:non)")
+#Boucle pour lire ou non carte
+rep = raw_input("Enregistrer une carte ?(O:oui/N:non)")
+liste = ['o', 'O', '0']
+while rep in liste:
+    enregistre()
+    rep = raw_input("\nEnregistrer une carte ? (O:oui/N:non)")
 
-    connection.commit()
+connection.commit()
 
-    #Ecriture des données
-    cursor.execute('SELECT * FROM Etudiants')
+#Ecriture des données
+cursor.execute('SELECT * FROM Etudiants')
 
-    for i in cursor:
-        print "*****\n"
-        print "ID: ", i[0]
-        print "UID: ", i[1]
-        print "Jour: ", i[2]
-        print "Heure: ", i[3]
-        print "Nom: ", i[4]
-        print "Prenom: ", i[5]
-        print "Groupe: ", i[6]
+for i in cursor:
+    print "*****\n"
+    print "ID: ", i[0]
+    print "UID: ", i[1]
+    print "Jour: ", i[2]
+    print "Heure: ", i[3]
+    print "Nom: ", i[4]
+    print "Prenom: ", i[5]
+    print "Groupe: ", i[6]
 
-    cursor.close()
-
-if __name__ == '__main__':
-    main()
+cursor.close()
