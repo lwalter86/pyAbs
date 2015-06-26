@@ -44,6 +44,9 @@ def lire():
         print "\nErreur: Aucun UID correspondant"
 
 def main():
+    """
+    Fonction principale
+    """
     #Connexion a la bdd
     con_base = sqlite3.connect('carte.db')
     cursor = con_base.cursor()
