@@ -4,6 +4,8 @@
 """
 lire_carte.py
 Lecture d'une carte NFC
+
+CODE OBSOLETE : REVERSE DANS enregistre_carte.py
 """
 
 import nxppy	

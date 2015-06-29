@@ -3,17 +3,57 @@
 
 """
 enregistre_carte.py
+
+PB : la carte doit être présente quand on choisi de lire une nouvelle carte
+sinon plantage
 """
 
-import sqlite3 
-import lire_carte
+import nxppy
+import sqlite3
+import time
+#import lire_carte
+
+def lecture_carte():		
+    """
+    Lecture de carte etudiante
+    """
+    carte_etu = {
+        'uid' : '',
+        'jour' : time.strftime('%Y-%m-%d', time.localtime()),
+        'heure' : time.strftime('%H:%M:%S', time.localtime()),
+        'nom' : '',
+        'prenom' : '',
+        'groupe' : ''
+        }
+
+    print "\nPasser la carte"
+    carte = nxppy.Mifare()
+
+    try:
+        carte_etu['uid'] = carte.select()		#Lecture UID de la carte
+        print "\nCarte détectée"
+        print "UID:", carte_etu['uid']
+        print carte_etu['heure'], "\n", carte_etu['jour']
+
+        #Données à écrire
+        carte_etu['nom'] = raw_input("Entrer le nom : ")
+        carte_etu['prenom'] = raw_input("Entrer le prenom : ")
+        carte_etu['groupe'] = raw_input("Entrer le semestre et le groupe : (ex: GE-S1-A1)")
+
+        return carte_etu
+            
+    except nxppy.SelectError:	#Si pas de carte, retour "try"	
+        pass																		
+
 
 def enregistre():
     """
     Enregistrement d'une carte nfc dans la BDD
     """
-    carte_etu = lire_carte.lecture_carte()
-
+    carte_etu = lecture_carte()
+    
+    print carte_etu
+    
     uid = carte_etu['uid']
     jour = carte_etu['jour']
     heure = carte_etu['heure']
