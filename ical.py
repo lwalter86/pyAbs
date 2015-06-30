@@ -24,8 +24,10 @@ import datetime
 import ical_lire_carte
 
 from config import config
+from codes_salles import codes_salles_GEII
 
-CODE_SALLE = 'C14R018'
+NOM_DE_LA_SALLE = 'GE-D7'
+CODE_SALLE = codes_salles_GEII[NOM_DE_LA_SALLE]
 
 def vevents_to_dataframe(cal):
     """
