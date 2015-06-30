@@ -46,10 +46,7 @@ requests_cache.install_cache(filename, backend='sqlite', expire_after=300) #expi
 
 jour = time.strftime('%Y-%m-%d', time.localtime())
 params = {
-    """
-    la date du calendrier est normalement jour
-    mais voir BUG
-    """
+    #mettre la variable jour à la place de la date (voir BUG)
     'firstDate':'2015-01-01',
     'lastDate':'2015-07-19',
     'projectId':5,
@@ -58,7 +55,8 @@ params = {
     'code' : CODE_SALLE
 }
 
-
+#url = "https://upplanning6.appli.univ-poitiers.fr/jsp/custom/modules/plannings/direct_cal.jsp?login={login}&password={password}&code={room}&calType=ical".format(login=config['login'], password=config['password'], room = CODE_SALLE)
+#url = "https://upplanning6.appli.univ-poitiers.fr/jsp/custom/modules/plannings/direct_cal.jsp?login={login}&password={password}&code=C14R018&calType=ical".format(login=config['login'], password=config['password'])
 url = "https://upplanning6.appli.univ-poitiers.fr/jsp/custom/modules/plannings/direct_cal.jsp"
 
 r = requests.get(url, params=params)
