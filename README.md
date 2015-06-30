@@ -3,3 +3,9 @@
 pyAbs
 ---
 Gestion des absences via Raspberry et carte nfc
+
+---
+Hardware :
+Raspberry Pie B, B+ or 2
+element14 explore-nfc
+
