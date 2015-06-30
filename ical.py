@@ -4,6 +4,8 @@
 
 """
 ical.py
+
+BUG = error when the ical is empty
 """
 
 import os
@@ -22,6 +24,8 @@ import datetime
 import ical_lire_carte
 
 from config import config
+
+CODE_SALLE = 'C14R018'
 
 def vevents_to_dataframe(cal):
     """
@@ -42,15 +46,27 @@ requests_cache.install_cache(filename, backend='sqlite', expire_after=300) #expi
 
 jour = time.strftime('%Y-%m-%d', time.localtime())
 params = {
-    'firstDate':jour,
-    'lastDate':jour,
-    'projectId':5
+    """
+    la date du calendrier est normalement jour
+    mais voir BUG
+    """
+    'firstDate':'2015-01-01',
+    'lastDate':'2015-07-19',
+    'projectId':5,
+    'login':config['password'],
+    'password':config['password'],
+    'code' : CODE_SALLE
 }
 
-url = "https://upplanning6.appli.univ-poitiers.fr/jsp/custom/modules/plannings/direct_cal.jsp?login={login}&password={password}&code=C14R018&calType=ical".format(login=config['login'], password=config['password'])
+
+url = "https://upplanning6.appli.univ-poitiers.fr/jsp/custom/modules/plannings/direct_cal.jsp"
 
 r = requests.get(url, params=params)
+#r = requests.get(url)
+print r.url
+
 dat = r.text
+print dat
 
 cal = Calendar.from_ical(dat)
 

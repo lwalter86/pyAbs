@@ -6,6 +6,7 @@ lire_carte.py
 Lecture d'une carte NFC
 
 CODE OBSOLETE : REVERSE DANS enregistre_carte.py
+2015-06-29
 """
 
 import nxppy	

@@ -6,6 +6,7 @@ enregistre_carte.py
 
 PB : la carte doit être présente quand on choisi de lire une nouvelle carte
 sinon plantage
+2015-06-29
 """
 
 import nxppy

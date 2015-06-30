@@ -58,3 +58,6 @@ target/
 
 # Config
 config.py
+
+# database
+*.db
