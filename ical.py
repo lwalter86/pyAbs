@@ -57,24 +57,19 @@ params = {
     'code' : CODE_SALLE
 }
 
-#url = "https://upplanning6.appli.univ-poitiers.fr/jsp/custom/modules/plannings/direct_cal.jsp?login={login}&password={password}&code={room}&calType=ical".format(login=config['login'], password=config['password'], room = CODE_SALLE)
-#url = "https://upplanning6.appli.univ-poitiers.fr/jsp/custom/modules/plannings/direct_cal.jsp?login={login}&password={password}&code=C14R018&calType=ical".format(login=config['login'], password=config['password'])
 url = "https://upplanning6.appli.univ-poitiers.fr/jsp/custom/modules/plannings/direct_cal.jsp"
 
 r = requests.get(url, params=params)
-#r = requests.get(url)
-print r.url
-
 dat = r.text
-print dat
-
 cal = Calendar.from_ical(dat)
 
+#Conversion du calendar en dataframe
 df_cal = vevents_to_dataframe(cal)
+
+#Selection des colonnes
 df_cal2 = df_cal[['DTSTART', 'DTEND', 'DESCRIPTION', 'SUMMARY', 'LOCATION']]
 
 desc = df_cal['DESCRIPTION']
-
 for elt in desc.index:
     vt = desc.get_value(elt)
     vtl = vt.to_ical()
