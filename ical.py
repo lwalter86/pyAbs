@@ -30,8 +30,9 @@ from codes_salles import codes_salles_GEII
 with open("codes_salles.yml") as fd:
     codes = yaml.load(fd)
 
+DEPARTEMENT = 'GEII'
 NOM_DE_LA_SALLE = 'GE-D7'
-CODE_SALLE = codes[NOM_DE_LA_SALLE]
+CODE_SALLE = codes[DEPARTEMENT][NOM_DE_LA_SALLE]
 
 def vevents_to_dataframe(cal):
     """

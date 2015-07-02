@@ -61,3 +61,6 @@ config.py
 
 # database
 *.db
+
+#request cache
+requests_cache.sqlite
