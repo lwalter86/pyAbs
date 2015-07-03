@@ -25,7 +25,7 @@ def lecture_carte():
         'nom' : '',
         'prenom' : '',
         'groupe' : ''
-        }
+    }
 
     print "\nPasser la carte"
     carte = nxppy.Mifare()
