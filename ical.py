@@ -51,7 +51,7 @@ def main():
         codes = yaml.load(fd)
     code_salle = codes[DEPARTEMENT][NOM_DE_LA_SALLE]
     
-    jour = time.strftime('%Y-%m-%d', time.localtime())
+    #jour = time.strftime('%Y-%m-%d', time.localtime())
     params = {
         #mettre la variable jour à la place de la date (**** voir BUG ****)
         'firstDate':'2015-01-01',
@@ -75,15 +75,15 @@ def main():
     desc = df_cal['DESCRIPTION']
     for elt in desc.index:
         vt = desc.get_value(elt)
-        vtl = vt.to_ical()
+        #vtl = vt.to_ical()
 
     s = desc.get_value(0)
 
-    ds = df_cal.DESCRIPTION[0:10].to_string
+    #ds = df_cal.DESCRIPTION[0:10].to_string
 
-    ll = s.to_ical()
+    #ll = s.to_ical()
 
-    col = ['JOUR', 'DEBUT', 'FIN', 'GROUPE', 'ENSEIGNANT', 'ETUDIANTS', 'EFFECTIF']
+    #col = ['JOUR', 'DEBUT', 'FIN', 'GROUPE', 'ENSEIGNANT', 'ETUDIANTS', 'EFFECTIF']
 
     df_cal2['JOUR'] = ''
     df_cal2['DEBUT'] = ''
@@ -96,9 +96,9 @@ def main():
 
     #Colonne Groupe et Enseignant
     for i, elt in enumerate(desc):
-        toto = elt.to_ical().split('\\n')
-        df_cal2.GROUPE[i] = toto[1]
-        df_cal2.ENSEIGNANT[i] = toto[2]
+        cours = elt.to_ical().split('\\n')
+        df_cal2.GROUPE[i] = cours[1]
+        df_cal2.ENSEIGNANT[i] = cours[2]
 
     #Heure Debut cours et jour
     for i, x in enumerate(df_cal['DTSTART']):
