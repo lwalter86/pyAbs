@@ -73,11 +73,11 @@ def main():
     df_cal2 = df_cal[['DTSTART', 'DTEND', 'DESCRIPTION', 'SUMMARY', 'LOCATION']]
 
     desc = df_cal['DESCRIPTION']
-    for elt in desc.index:
-        vt = desc.get_value(elt)
+    #for elt in desc.index:
+        #vt = desc.get_value(elt)
         #vtl = vt.to_ical()
 
-    s = desc.get_value(0)
+    #s = desc.get_value(0)
 
     #ds = df_cal.DESCRIPTION[0:10].to_string
 
