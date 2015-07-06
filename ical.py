@@ -24,7 +24,7 @@ import datetime
 import ical_lire_carte
 import yaml
 #Config contient l'url du ical UPplanning, le login et le mot de passe
-from config import config, ical_url
+from config import config
 
 DEPARTEMENT = 'GEII'
 NOM_DE_LA_SALLE = 'GE-D7'
@@ -62,7 +62,7 @@ def main():
         'code' : code_salle
     }
 
-    r = requests.get(ical_url, params=params)
+    r = requests.get(config[ical_url], params=params)
     dat = r.text
     cal = Calendar.from_ical(dat)
 
