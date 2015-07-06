@@ -62,7 +62,7 @@ def main():
         'code' : code_salle
     }
 
-    r = requests.get(config[ical_url], params=params)
+    r = requests.get(config['ical_url'], params=params)
     dat = r.text
     cal = Calendar.from_ical(dat)
 
