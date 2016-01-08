@@ -12,7 +12,9 @@ sinon plantage
 import nxppy
 import sqlite3
 import time
-#import lire_carte
+import logging
+from logging.handlers import RotatingFileHandler
+
 
 def lecture_carte():		
     """
@@ -32,9 +34,9 @@ def lecture_carte():
 
     try:
         carte_etu['uid'] = carte.select()		#Lecture UID de la carte
-        print "\nCarte détectée"
-        print "UID:", carte_etu['uid']
-        print carte_etu['heure'], "\n", carte_etu['jour']
+        logger.debug("Carte détectée")
+        logger.debug("UID:", carte_etu['uid'])
+        logger.debug(carte_etu['heure'], "\n", carte_etu['jour'])
 
         #Données à écrire
         carte_etu['nom'] = raw_input("Entrer le nom : ")
@@ -53,7 +55,7 @@ def enregistre():
     """
     carte_etu = lecture_carte()
     
-    print carte_etu
+    logger.debug(carte_etu)
     
     uid = carte_etu['uid']
     jour = carte_etu['jour']
@@ -73,27 +75,45 @@ def enregistre():
             ajout = 1        #Valeurs a ajoutées        
         else:
             ajout = 0
-            print "UID déjà existant"    
+            logger.debug("UID déjà existant")
             cursor.execute("""UPDATE Etudiants SET groupe = ? WHERE uid = ?""", (groupe, uid, ))
             break
 
     if ajout != 0:     
         cursor.execute('''INSERT INTO Etudiants(uid, jour, heure, nom, prenom, groupe)
         VALUES(?, ?, ?, ?, ?, ?)''', (uid, jour, heure, nom, prenom, groupe))    
-        print "Les valeurs ont été ajoutées"
+        logger.info("Carte ajoutée")
 
         
 def main():
     
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    
+    formatter = logging.Formatter("%(asctime)s :: %(name)s :: %(levelname)s :: %(message)s")
+    
+    file_handler = RotatingFileHandler('debug.log', mode="a", maxBytes= 100000000, backupCount= 1 , encoding="utf-8")
+    file_handler.setFormatter(formatter)
+    file_handler.setLevel(logging.INFO)
+        
+    steam_handler = logging.StreamHandler()
+    steam_handler.setFormatter(formatter)
+    steam_handler.setLevel(logging.DEBUG)
+    
+    logger.addHandler(file_handler)
+    logger.addHandler(steam_handler)
+    
+    logger.info('Start Script')
+    
     #Connexion a la bdd
     connection = sqlite3.connect('carte.db')
-    print "\nOuverture de la base de données"
+    logger.debug("Ouverture de la base de données")
 
     cursor = connection.cursor()
 
     #Creation de la table
     cursor.execute("CREATE TABLE IF NOT EXISTS Etudiants(id INTEGER PRIMARY KEY, uid VARCHAR, jour DATE, heure TIME, nom VARCHAR, prenom VARCHAR, groupe VARCHAR)")
-    print "Table créée"
+    logger.debug("Table créée")
 
     #Boucle pour lire ou non carte
     rep = raw_input("Enregistrer une carte ?(O:oui/N:non)")
