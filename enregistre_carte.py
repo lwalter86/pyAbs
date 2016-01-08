@@ -8,12 +8,28 @@ PB : la carte doit être présente quand on choisi de lire une nouvelle carte
 sinon plantage
 2015-06-29
 """
-
+from __future__ import print_function
 import nxppy
 import sqlite3
 import time
 import logging
 from logging.handlers import RotatingFileHandler
+
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+
+formatter = logging.Formatter("%(asctime)s :: %(levelname)s :: %(message)s")
+
+file_handler = RotatingFileHandler('debug.log', mode="a", maxBytes= 100000000, backupCount= 1)
+file_handler.setFormatter(formatter)
+file_handler.setLevel(logging.DEBUG)
+    
+steam_handler = logging.StreamHandler()
+steam_handler.setFormatter(formatter)
+steam_handler.setLevel(logging.DEBUG)
+
+logger.addHandler(file_handler)
+logger.addHandler(steam_handler)
 
 
 def lecture_carte():		
@@ -29,7 +45,7 @@ def lecture_carte():
         'groupe' : ''
     }
 
-    print "\nPasser la carte"
+    print("\nPassez la carte")
     carte = nxppy.Mifare()
 
     try:
@@ -48,8 +64,32 @@ def lecture_carte():
     except nxppy.SelectError:	#Si pas de carte, retour "try"	
         pass																		
 
+def create_table(dbname):
+    try:
+        db = sqlite3.connect(dbname)
+        cursor = db.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS Etudiants(
+                              id INTEGER PRIMARY KEY,
+                              uid VARCHAR,
+                              jour DATE,
+                              heure TIME,
+                              nom VARCHAR,
+                              prenom VARCHAR,
+                              groupe VARCHAR)''')
 
-def enregistre():
+        db.commit()
+        logger.info("Table créée")
+        
+    except Exception as e:
+        # Roll back any change if something goes wrong
+        logger.info("Erreur lors de la creation de la table")
+        db.rollback()
+        raise e
+    
+    finally:
+        db.close()
+      
+def enregistre(bdd):
     """
     Enregistrement d'une carte nfc dans la BDD
     """
@@ -64,80 +104,88 @@ def enregistre():
     prenom = carte_etu['prenom']
     groupe = carte_etu['groupe']
 
-    cursor.execute('SELECT uid FROM Etudiants')
-    liste_uid = cursor.fetchall()
-
-    #Test si les valeurs sont connues
-    ajout = 0
-    for uid in liste_uid:
-
-        if uid != uid[0]:    
-            ajout = 1        #Valeurs a ajoutées        
-        else:
-            ajout = 0
+    try:
+        db = sqlite3.connect(bdd)
+        cursor = db.cursor()
+        cursor.execute('SELECT uid FROM Etudiants')
+        liste = cursor.fetchall()
+        liste_uid = [x[0] for x in liste_uid]
+        if uid in liste_uid:
             logger.debug("UID déjà existant")
             cursor.execute("""UPDATE Etudiants SET groupe = ? WHERE uid = ?""", (groupe, uid, ))
-            break
+            
+        else:
+            cursor.execute('''INSERT INTO Etudiants(uid, jour, heure, nom, prenom, groupe)
+                                VALUES(?, ?, ?, ?, ?, ?)''', (uid, jour, heure, nom, prenom, groupe))    
+            logger.info("Carte ajoutée")
 
-    if ajout != 0:     
-        cursor.execute('''INSERT INTO Etudiants(uid, jour, heure, nom, prenom, groupe)
-        VALUES(?, ?, ?, ?, ?, ?)''', (uid, jour, heure, nom, prenom, groupe))    
-        logger.info("Carte ajoutée")
+    except Exception as e:
+        # Roll back any change if something goes wrong
+        db.rollback()
+        raise e
+    
+    finally:
+        db.close()
+        
+    #for uid in liste_uid:
 
+        #if uid2 != uid:
+    
+        
+def print_table(bdd):
+    try:
+        db = sqlite3.connect(bdd)
+        cursor = db.cursor()
+        cursor.execute('SELECT * FROM Etudiants')
+
+        for i in cursor:
+            print("*****\n")
+            print("ID: ", i[0])
+            print("UID: ", i[1])
+            print("Jour: ", i[2])
+            print("Heure: ", i[3])
+            print("Nom: ", i[4])
+            print("Prenom: ", i[5])
+            print("Groupe: ", i[6])
+        
+    except Exception as e:
+        # Roll back any change if something goes wrong
+        db.rollback()
+        raise e
+    
+    finally:
+        db.close()
         
 def main():
     
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+    logger.info("START Script")
     
-    formatter = logging.Formatter("%(asctime)s :: %(name)s :: %(levelname)s :: %(message)s")
-    
-    file_handler = RotatingFileHandler('debug.log', mode="a", maxBytes= 100000000, backupCount= 1 , encoding="utf-8")
-    file_handler.setFormatter(formatter)
-    file_handler.setLevel(logging.INFO)
-        
-    steam_handler = logging.StreamHandler()
-    steam_handler.setFormatter(formatter)
-    steam_handler.setLevel(logging.DEBUG)
-    
-    logger.addHandler(file_handler)
-    logger.addHandler(steam_handler)
-    
-    logger.info('Start Script')
+    dbname = "carte.db"
     
     #Connexion a la bdd
-    connection = sqlite3.connect('carte.db')
-    logger.debug("Ouverture de la base de données")
+    #connection = sqlite3.connect(dbname)
+    #logger.debug("Ouverture de la base de données")
 
-    cursor = connection.cursor()
+    #cursor = connection.cursor()
 
     #Creation de la table
-    cursor.execute("CREATE TABLE IF NOT EXISTS Etudiants(id INTEGER PRIMARY KEY, uid VARCHAR, jour DATE, heure TIME, nom VARCHAR, prenom VARCHAR, groupe VARCHAR)")
-    logger.debug("Table créée")
+    create_table(dbname)
 
     #Boucle pour lire ou non carte
     rep = raw_input("Enregistrer une carte ?(O:oui/N:non)")
     liste = ['o', 'O', '0']
     while rep in liste:
-        enregistre()
+        enregistre(dbname)
         rep = raw_input("\nEnregistrer une carte ? (O:oui/N:non)")
+    else:
+        logger.info("END Script")
 
-    connection.commit()
+    #connection.commit()
 
     #Ecriture des données
-    cursor.execute('SELECT * FROM Etudiants')
+    print_table(dbname)
 
-    for i in cursor:
-        print "*****\n"
-        print "ID: ", i[0]
-        print "UID: ", i[1]
-        print "Jour: ", i[2]
-        print "Heure: ", i[3]
-        print "Nom: ", i[4]
-        print "Prenom: ", i[5]
-        print "Groupe: ", i[6]
-
-    cursor.close()
+    #cursor.close()
 
 if __name__ == "__main__":
     main()
