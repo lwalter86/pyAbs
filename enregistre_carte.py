@@ -52,7 +52,7 @@ def lecture_carte():
         carte_etu['uid'] = carte.select()		#Lecture UID de la carte
         logger.debug("Carte détectée")
         logger.debug("UID:", carte_etu['uid'])
-        logger.debug(carte_etu['heure'], "\n", carte_etu['jour'])
+        #logger.debug(carte_etu['heure'], "\n", carte_etu['jour'])
 
         #Données à écrire
         carte_etu['nom'] = raw_input("Entrer le nom : ")
@@ -109,7 +109,7 @@ def enregistre(bdd):
         cursor = db.cursor()
         cursor.execute('SELECT uid FROM Etudiants')
         liste = cursor.fetchall()
-        liste_uid = [x[0] for x in liste_uid]
+        liste_uid = [x[0] for x in liste]
         if uid in liste_uid:
             logger.debug("UID déjà existant")
             cursor.execute("""UPDATE Etudiants SET groupe = ? WHERE uid = ?""", (groupe, uid, ))
